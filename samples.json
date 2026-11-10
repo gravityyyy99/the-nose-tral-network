@@ -1,0 +1,65 @@
+{
+  "coffee": {
+    "molecules": {
+      "furfuryl alcohol": "OCc1ccco1",
+      "2-methylpyrazine": "Cc1cnccn1",
+      "furfuryl thiol": "SCc1ccco1",
+      "guaiacol": "COc1ccccc1O",
+      "4-ethylguaiacol": "CCc1ccc(O)c(OC)c1",
+      "maltol": "CC1=C(O)C(=O)C=CO1",
+      "2,3-pentanedione": "CCC(=O)C(C)=O",
+      "diacetyl": "CC(=O)C(C)=O"
+    }
+  },
+  "vanilla candle": {
+    "molecules": {
+      "vanillin": "COc1cc(C=O)ccc1O",
+      "ethyl vanillin": "CCOc1cc(C=O)ccc1O",
+      "benzaldehyde": "O=Cc1ccccc1",
+      "coumarin": "O=c1ccc2ccccc2o1",
+      "eugenol": "C=CCc1ccc(O)c(OC)c1",
+      "benzyl benzoate": "O=C(OCc1ccccc1)c1ccccc1"
+    }
+  },
+  "mint": {
+    "molecules": {
+      "menthol": "CC(C)C1CCC(C)CC1O",
+      "menthone": "CC(C)C1CCC(C)CC1=O",
+      "carvone": "CC1=CCC(CC1=O)C(C)=C",
+      "1,8-cineole": "CC1(C)OC2CCC1(C)CC2",
+      "menthyl acetate": "CC(=O)OC1CC(C)CCC1C(C)C",
+      "limonene": "CC1=CCC(CC1)C(C)=C"
+    }
+  },
+  "lemon": {
+    "molecules": {
+      "limonene": "CC1=CCC(CC1)C(C)=C",
+      "citral": "CC(C)=CCCC(C)=CC=O",
+      "linalool": "CC(C)=CCCC(C)(O)C=C",
+      "gamma-terpinene": "CC1=CCC(C(C)C)=CC1",
+      "beta-pinene": "CC1(C)C2CCC(=C)C1C2",
+      "geranyl acetate": "CC(=O)OCC=C(C)CCC=C(C)C"
+    }
+  },
+  "banana": {
+    "molecules": {
+      "isoamyl acetate": "CC(C)CCOC(C)=O",
+      "isoamyl butyrate": "CCCC(=O)OCCC(C)C",
+      "ethyl butyrate": "CCCC(=O)OCC",
+      "hexyl acetate": "CCCCCCOC(C)=O",
+      "butyl acetate": "CCCCOC(C)=O"
+    }
+  },
+  "wood smoke": {
+    "molecules": {
+      "guaiacol": "COc1ccccc1O",
+      "syringol": "COc1cccc(OC)c1O",
+      "4-methylguaiacol": "COc1cc(C)ccc1O",
+      "o-cresol": "Cc1ccccc1O",
+      "phenol": "Oc1ccccc1",
+      "furfural": "O=Cc1ccco1",
+      "acetic acid": "CC(=O)O",
+      "4-vinylguaiacol": "C=Cc1ccc(O)c(OC)c1"
+    }
+  }
+}

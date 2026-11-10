@@ -1,0 +1,26 @@
+# virtual environments and caches
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+
+# secrets (none are used by this project, but keep them out just in case)
+.env
+.env.*
+*.pem
+*.key
+.streamlit/secrets.toml
+
+# downloaded dataset and trained models (recreated by the scripts, see README)
+data/
+*.joblib
+
+# editor / OS / assistant files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+.claude/

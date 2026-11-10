@@ -1,0 +1,14 @@
+[theme]
+# dark is the default: this also removes the white flash while the page first loads
+base = "dark"
+primaryColor = "#d97757"
+backgroundColor = "#1f1e1d"
+secondaryBackgroundColor = "#2a2927"
+textColor = "#f5f4ee"
+font = "sans serif"
+
+[client]
+toolbarMode = "minimal"
+
+[browser]
+gatherUsageStats = false

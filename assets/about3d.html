@@ -1,0 +1,261 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--ink:#141413;--body:#3d3d3a;--muted:#6b6a63;--accent:#c96442;--card:#ffffff;--line:#e8e6dc;}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:transparent;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--body)}
+canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.serif{font-family:'Source Serif 4',Georgia,'Times New Roman',serif}
+.slot{position:absolute;display:flex;pointer-events:none}
+.slot > *{pointer-events:auto}
+.slot.C{left:0;right:0;top:0;bottom:0;align-items:flex-start;justify-content:center;text-align:center;padding-top:10vh}
+.slot.L{left:6vw;top:0;bottom:0;align-items:center}
+.slot.R{right:6vw;top:0;bottom:0;align-items:center}
+.panel{max-width:min(430px,86vw);padding:1.5rem 1.7rem;border-radius:22px;background:color-mix(in srgb,var(--card) 74%,transparent);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line);visibility:hidden;opacity:0}
+.panel.plain{background:none;border:0;backdrop-filter:none;-webkit-backdrop-filter:none;max-width:90vw}
+.eyebrow{color:var(--accent);font-weight:600;font-size:.72rem;letter-spacing:.2em;margin-bottom:.6rem}
+.panel h1{font-size:clamp(2.2rem,6.5vw,4.6rem);line-height:1.04;margin:.2rem 0;color:var(--ink);font-weight:500;letter-spacing:-.02em}
+.panel h2{font-size:clamp(1.7rem,3.6vw,2.5rem);line-height:1.1;margin:0 0 .6rem;color:var(--ink);font-weight:500;letter-spacing:-.01em}
+.panel p{margin:.2rem 0;font-size:1.04rem;line-height:1.65}
+.panel.plain p{font-size:1.15rem;color:var(--muted)}
+.btns{display:flex;gap:.6rem;margin-top:1.1rem;flex-wrap:wrap}
+.btn{display:inline-block;padding:.55rem 1.2rem;border-radius:999px;border:1px solid var(--accent);color:var(--accent);text-decoration:none;
+  font-weight:600;font-size:.92rem;transition:background .25s,color .25s}
+.btn:hover,.btn.fill{background:var(--accent);color:#fff}
+#hint{position:absolute;left:0;right:0;bottom:4vh;text-align:center;color:var(--muted);font-size:.8rem;letter-spacing:.25em;pointer-events:none}
+#hint i{display:block;width:1px;height:34px;margin:.6rem auto 0;background:linear-gradient(var(--accent),transparent);animation:drop 1.6s ease-in-out infinite}
+@keyframes drop{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+#rail{position:absolute;right:2.2vw;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:11px}
+#rail b{width:7px;height:7px;border-radius:50%;background:var(--line);transition:all .3s}
+#rail b.on{background:var(--accent);transform:scale(1.5)}
+#bar{position:absolute;left:0;top:0;height:3px;background:var(--accent);width:0}
+.static .slot{position:relative;left:0;right:0;top:0;bottom:0;padding:1rem}
+.static .panel{visibility:visible;opacity:1}
+.static canvas,.static #hint,.static #rail,.static #fallback{display:none}
+#fallback{display:none;position:absolute;left:50%;top:50%;width:min(260px,50vw);transform:translate(-50%,-60%);border-radius:50%;
+  box-shadow:0 0 60px var(--accent);border:2px solid var(--accent)}
+.nogl #fallback{display:block}
+@media (max-width:700px){
+  .slot.L,.slot.R{left:4vw;right:4vw;top:auto;bottom:4vh;align-items:flex-end;justify-content:center}
+  .panel{padding:1.1rem 1.2rem}.panel p{font-size:.95rem}#rail{display:none}
+}
+</style></head>
+<body>
+<canvas id="c"></canvas>
+<img id="fallback" alt="__NAME__">
+<div id="bar"></div>
+<div class="slot C"><div class="panel plain" id="p0"><div class="eyebrow">ABOUT ME</div><h1 class="serif">Welcome to my world</h1><p>Scroll to explore</p></div></div>
+<div class="slot L"><div class="panel" id="p1"><div class="eyebrow">THE CREATOR</div><h2 class="serif">__NAME__</h2><p>Creator of <b>The Nose-tral Network</b> and its AI, <b>Aroma-GPT</b>.</p></div></div>
+<div class="slot R"><div class="panel" id="p2"><div class="eyebrow">MY VISION</div><h2 class="serif">Teach machines to smell</h2><p>Smell is the sense machines understand least. I want to show it can be taught, and to explain it so clearly that anyone can follow along, not just chemists or engineers.</p></div></div>
+<div class="slot L"><div class="panel" id="p3"><div class="eyebrow">WHAT I MADE</div><h2 class="serif">Aroma-GPT</h2><p>A smell model that reads molecules, an electronic nose with its own model that works from sensor readings alone, and the site and documentation book around them.</p></div></div>
+<div class="slot R"><div class="panel" id="p4"><div class="eyebrow">WHAT I WAS THINKING</div><h2 class="serif">Show it all, honestly</h2><p>I wanted the whole chain from a word to a guess in one place. The nose is simulated for now, and I publish where the models fail as well as where they work.</p></div></div>
+<div class="slot L"><div class="panel" id="p5"><div class="eyebrow">WHAT COMES NEXT</div><h2 class="serif">A real smelling device</h2><p>The next step is real hardware, tested properly, with every result shared here. This is a fully fledged project, not a one-off demo.</p>
+<div class="btns"><a class="btn fill" href="__GITHUB__" target="_blank" rel="noopener">GitHub</a><a class="btn" href="__LINKEDIN__" target="_blank" rel="noopener">LinkedIn</a></div></div></div>
+<div id="hint">SCROLL<i></i></div>
+<div id="rail"><b></b><b></b><b></b><b></b><b></b><b></b></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+const P = window.parent, PD = P.document, FE = window.frameElement;
+const AVATAR = "__AVATAR__";
+const LOCAL_RAW = "__LOCAL__";   // data URI of assets/me.png, if present
+const LOCAL = (LOCAL_RAW.indexOf("__") === 0 || LOCAL_RAW.length < 30) ? "" : LOCAL_RAW;
+const HEIGHT_VH = 560;                       // total scroll length of the stage, in viewport heights
+
+/* ---- stage: a tall box in the page, with this frame stuck to the top while you scroll through it ---- */
+const box = FE.parentElement;
+const SAVED = [[box, box.style.cssText], [FE, FE.style.cssText]];   // restored when leaving this page
+box.style.cssText += ';height:' + HEIGHT_VH + 'vh;min-height:' + HEIGHT_VH + 'vh;flex:0 0 ' + HEIGHT_VH + 'vh';
+FE.style.cssText += ';position:sticky;top:0;height:100vh;width:100%;display:block;border:0';
+for (let e = box.parentElement; e && e !== PD.body; e = e.parentElement) {
+  SAVED.push([e, e.style.cssText]);
+  const o = getComputedStyle(e).overflow; if (o !== 'visible' && e.getAttribute('data-testid') !== 'stMain') e.style.overflow = 'visible';
+  if (e.getAttribute('data-testid') !== 'stMain' && e.getAttribute('data-testid') !== 'stMainBlockContainer') { e.style.flex = '0 0 auto'; e.style.minHeight = '0'; }
+}
+
+const restoreStage = () => SAVED.forEach(([el, css]) => { el.style.cssText = css; });
+window.addEventListener('pagehide', restoreStage); window.addEventListener('unload', restoreStage);
+
+/* ---- theme colours, read live from the host page ---- */
+let DARK = false;
+function readTheme() {
+  const cs = getComputedStyle(PD.documentElement), g = n => cs.getPropertyValue(n).trim();
+  const r = document.documentElement.style;
+  ['--ink','--body','--muted','--accent','--card','--line'].forEach(n => g(n) && r.setProperty(n, g(n)));
+  const bg = g('--bg') || '#faf9f5', v = parseInt(bg.slice(1), 16);
+  DARK = ((v >> 16 & 255) * .299 + (v >> 8 & 255) * .587 + (v & 255) * .114) < 90;
+  return g('--accent') || '#c96442';
+}
+let accent = readTheme();
+
+/* ---- fallbacks ---- */
+const plainCSS = () => { document.body.classList.add('static'); FE.style.height = 'auto'; box.style.height = 'auto';
+  FE.style.position = 'static'; document.documentElement.style.overflow = 'auto'; document.body.style.overflow = 'auto'; };
+if (!window.THREE || !window.gsap) {
+  plainCSS();
+  const iv = setInterval(() => { FE.style.height = document.body.scrollHeight + 'px'; }, 500);
+} else {
+document.getElementById('fallback').src = LOCAL || AVATAR;
+
+/* ---- three.js scene: a hologram built from the photo ---- */
+let renderer, ok = true;
+try { renderer = new THREE.WebGLRenderer({canvas: document.getElementById('c'), alpha: true, antialias: true}); }
+catch (e) { ok = false; plainCSS(); setInterval(() => { FE.style.height = document.body.scrollHeight + 'px'; }, 500); }
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(38, 1, .1, 100); camera.position.set(0, .15, 6.4);
+const holo = new THREE.Group(), base = new THREE.Group(), floaty = new THREE.Group();
+floaty.add(holo); scene.add(floaty, base);
+window.__dbg = {}; const uni = {tex: {value: null}, time: {value: 0}, size: {value: .034}, pxScale: {value: 1000}, aspect: {value: 1}, bg: {value: new THREE.Color(1,1,1)}, keyOn: {value: 0}, build: {value: 0},
+             color: {value: new THREE.Color(accent)}, dark: {value: 0}};
+
+function makeTexture(img) { const t = new THREE.Texture(img); t.needsUpdate = true; return t; }
+function fallbackTexture() {                       // a generated head-and-shoulders if the photo cannot be read
+  const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d');
+  const g = x.createRadialGradient(128, 110, 10, 128, 110, 120); g.addColorStop(0, '#fff'); g.addColorStop(1, '#222');
+  x.fillStyle = '#111'; x.fillRect(0, 0, 256, 256);
+  x.fillStyle = g; x.beginPath(); x.ellipse(128, 100, 52, 64, 0, 0, 7); x.fill();
+  x.beginPath(); x.ellipse(128, 250, 96, 70, 0, 0, 7); x.fill();
+  return new THREE.CanvasTexture(c);
+}
+if (ok) {
+  const N = 118, W = 2.7, pos = new Float32Array(N * N * 3), auv = new Float32Array(N * N * 2);
+  for (let j = 0, k = 0; j < N; j++) for (let i = 0; i < N; i++, k++) {
+    pos.set([(i / (N - 1) - .5) * W, (j / (N - 1) - .5) * W, 0], k * 3); auv.set([i / (N - 1), j / (N - 1)], k * 2);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3)); geo.setAttribute('auv', new THREE.BufferAttribute(auv, 2));
+  const mat = new THREE.ShaderMaterial({
+    uniforms: uni, transparent: true, depthWrite: false,
+    vertexShader: `uniform sampler2D tex; uniform float time,size,build,pxScale,aspect,keyOn; uniform vec3 bg; attribute vec2 auv; varying vec3 vCol; varying float vLum;
+      void main(){ vec4 t=texture2D(tex,auv); float lum=pow(dot(t.rgb,vec3(.299,.587,.114)),.62); vec3 p=position; p.y*=aspect;
+        float mask=mix(1.,smoothstep(.10,.24,distance(t.rgb,bg)),keyOn)*t.a;
+        p.z+=(lum-.42)*.95*mask; p.x+=sin(p.y*7.+time*2.)*.004;
+        float b=smoothstep(0.,1.,build*1.7-auv.y*.7)*step(.12,mask); vLum=lum*b; vCol=t.rgb;
+        vec4 mv=modelViewMatrix*vec4(p,1.); gl_PointSize=size*(.6+lum*1.0)*b*pxScale/(-mv.z); gl_Position=projectionMatrix*mv; }`,
+    fragmentShader: `uniform vec3 color; uniform float time,dark; varying vec3 vCol; varying float vLum;
+      void main(){ vec2 c=gl_PointCoord-.5; float d=length(c); if(d>.5) discard; float a=smoothstep(.5,0.,d);
+        vec3 tint=mix(vCol*.9,color*(.6+vLum*1.1),mix(.78,.5,dark));
+        float fl=.88+.12*sin(time*30.+gl_FragCoord.y*.05);
+        gl_FragColor=vec4(tint,a*(.7+vLum*.3)*fl); }`
+  });
+  const pts = new THREE.Points(geo, mat); holo.add(pts);
+  // scanning bar
+  const scan = new THREE.Mesh(new THREE.PlaneGeometry(3, .018), new THREE.MeshBasicMaterial({color: accent, transparent: true, opacity: .35, depthWrite: false}));
+  holo.add(scan);
+  // base: glowing rings, beam, rising molecules
+  const ringMat = () => new THREE.MeshBasicMaterial({color: accent, transparent: true, opacity: .5, side: THREE.DoubleSide, depthWrite: false});
+  const rings = [1.55, 1.9, 2.3].map((r, i) => { const m = new THREE.Mesh(new THREE.RingGeometry(r, r + .025, 96), ringMat());
+    m.rotation.x = -Math.PI / 2; m.position.y = -1.55; base.add(m); return m; });
+  const beam = new THREE.Mesh(new THREE.CylinderGeometry(1.35, 1.65, 3.1, 48, 1, true),
+    new THREE.MeshBasicMaterial({color: accent, transparent: true, opacity: .07, side: THREE.DoubleSide, depthWrite: false}));
+  beam.position.y = 0; base.add(beam);
+  const M = 160, mp = new Float32Array(M * 3), ms = new Float32Array(M);
+  for (let i = 0; i < M; i++) { const a = Math.random() * 6.28, r = 1 + Math.random() * 1.2;
+    mp.set([Math.cos(a) * r, -1.5 + Math.random() * 3.2, Math.sin(a) * r], i * 3); ms[i] = .2 + Math.random() * .6; }
+  const mg = new THREE.BufferGeometry(); mg.setAttribute('position', new THREE.BufferAttribute(mp, 3));
+  const mols = new THREE.Points(mg, new THREE.PointsMaterial({color: accent, size: .045, transparent: true, opacity: .75, depthWrite: false}));
+  base.add(mols);
+
+  const loader = new THREE.TextureLoader(); loader.setCrossOrigin('anonymous');
+  uni.tex.value = fallbackTexture();
+  // remove a flat backdrop (white, or the avatar's grey-blue): the colour along the top edge is treated as background
+  function keyFrom(img) {
+    try {
+      const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d'); x.drawImage(img, 0, 0, 64, 64);
+      const d = x.getImageData(0, 0, 64, 5).data; let r = 0, g = 0, b = 0, a = 0, n = 0;
+      for (let k = 0; k < d.length; k += 4) { r += d[k]; g += d[k + 1]; b += d[k + 2]; a += d[k + 3]; n++; }
+      if (a / n < 128) { uni.keyOn.value = 0; return; }          // transparent PNG: the alpha channel already cuts it out
+      uni.bg.value.setRGB(r / n / 255, g / n / 255, b / n / 255); uni.keyOn.value = 1;
+    } catch (e) { uni.keyOn.value = 0; }
+  }
+  const setTex = t => { uni.tex.value = t; uni.aspect.value = t.image.height / t.image.width; keyFrom(t.image); };
+  if (LOCAL) {
+    loader.load(LOCAL, t => { setTex(t); window.__dbg.loaded = 'local'; }, undefined, () => { window.__dbg.loaded = 'local-failed'; });
+  } else
+  fetch('https://api.github.com/users/__GHUSER__').then(r => r.json()).then(j => {
+    const u = (j.avatar_url || '') + (j.avatar_url && j.avatar_url.includes('?') ? '&' : '?') + 's=512';
+    loader.load(u, t => { setTex(t); window.__dbg.loaded = 'avatar'; }, undefined, () => { window.__dbg.loaded = 'fallback-cors'; });
+  }).catch(() => { window.__dbg.loaded = 'fallback-api'; });
+
+  /* ---- sizing ---- */
+  let mobile = false;
+  function resize() {
+    const w = document.documentElement.clientWidth, h = document.documentElement.clientHeight;
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.setSize(w, h, false);
+    camera.aspect = w / h; camera.updateProjectionMatrix();
+    uni.pxScale.value = h / (2 * Math.tan(camera.fov * Math.PI / 360)) * renderer.getPixelRatio(); mobile = w < 700; buildTimeline();
+  }
+
+  /* ---- GSAP timeline: everything is scrubbed by scroll progress ---- */
+  let tl;
+  function buildTimeline() {
+    const prog = tl ? tl.progress() : 0; if (tl) tl.kill();
+    gsap.set(holo.rotation, {y: 0});
+    const hx = mobile ? 0 : 1.55, hy = mobile ? .95 : 0, sc = mobile ? .62 : 1;
+    tl = gsap.timeline({paused: true, defaults: {ease: 'power2.inOut'}});
+    // stage 0: hologram centred, then slides right as the first card appears
+    gsap.set(holo.scale, {x: sc, y: sc, z: sc});
+    tl.fromTo(holo.position, {x: 0, y: mobile ? .1 : -.4}, {x: hx, y: hy, duration: .1}, .12);
+    tl.to(holo.rotation, {y: .45, duration: .16}, 0)
+      .to(holo.position, {x: -hx, duration: .14}, .31)
+      .to(holo.rotation, {y: .45 + Math.PI * 2, duration: .2, ease: 'power1.inOut'}, .34)   // full spin: see it in 3D
+      .to(holo.position, {x: hx, duration: .14}, .5)
+      .to(holo.position, {x: -hx, duration: .14}, .67)
+      .to(holo.rotation, {y: .45 + Math.PI * 2 - .5, duration: .16}, .67)
+      .to(holo.position, {x: hx, duration: .14}, .83)
+      .to(holo.rotation, {y: .45 + Math.PI * 2 + .15, duration: .14}, .83);
+    tl.fromTo(camera.position, {z: 6.6}, {z: 5.4, duration: .16}, 0).to(camera.position, {z: 6, duration: .3}, .5);
+    tl.fromTo(base.rotation, {y: 0}, {y: Math.PI * 3, duration: 1, ease: 'none'}, 0);
+    const win = [[0, .13], [.15, .33], [.34, .5], [.52, .67], [.69, .84], [.86, 1.01]];
+    win.forEach(([s, e], i) => {
+      const el = '#p' + i;
+      if (i === 0) tl.fromTo(el, {autoAlpha: 1, y: 0}, {autoAlpha: 0, y: -40, duration: .05}, e - .05);
+      else tl.fromTo(el, {autoAlpha: 0, y: 44}, {autoAlpha: 1, y: 0, duration: .05, ease: 'power3.out'}, s);
+      if (i > 0 && i < 5) tl.to(el, {autoAlpha: 0, y: -40, duration: .05}, e - .05);
+    });
+    tl.to({}, {duration: .01}, 1);      // pad to length 1
+    tl.progress(prog);
+  }
+
+  const rail = [...document.querySelectorAll('#rail b')], bar = document.getElementById('bar'), hint = document.getElementById('hint');
+  const stops = [.07, .24, .42, .6, .76, .93];
+  let target = 0, shown = -1;
+  function scrollProgress() {
+    const r = box.getBoundingClientRect(), total = r.height - P.innerHeight;
+    return total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 0;
+  }
+
+  resize(); new ResizeObserver(resize).observe(document.documentElement);
+  Object.assign(window.__dbg, {holo, uni, camera, floaty, getTl: () => tl, renderer});
+  gsap.ticker.lagSmoothing(0); const T0 = performance.now();
+  gsap.ticker.add(t => {
+    uni.time.value = t; uni.dark.value = DARK ? 1 : 0;
+    { const u = Math.min(1, (performance.now() - T0) / 2600); uni.build.value = 1 - Math.pow(1 - u, 3); }
+    const p = scrollProgress();
+    if (Math.abs(p - target) > .0004) { target = p; gsap.to(tl, {progress: p, duration: .7, ease: 'power3.out', overwrite: true}); }
+    const cur = tl.progress();
+    if (Math.abs(cur - shown) > .001) {
+      shown = cur; bar.style.width = (cur * 100) + '%'; hint.style.opacity = cur < .03 ? 1 : 0;
+      let a = 0; stops.forEach((s, i) => { if (cur >= s - .08) a = i; }); rail.forEach((b, i) => b.classList.toggle('on', i === a));
+    }
+    scan.position.y = Math.sin(t * 1.3) * 1.25; scan.material.opacity = .25 + .3 * Math.abs(Math.cos(t * 1.3));
+    rings.forEach((m, i) => { const s = 1 + .05 * Math.sin(t * 1.5 + i); m.scale.set(s, s, s); });
+    const a = mols.geometry.attributes.position;
+    for (let i = 0; i < M; i++) { let y = a.getY(i) + ms[i] * .008; if (y > 1.7) y = -1.55; a.setY(i, y); }
+    a.needsUpdate = true;
+    floaty.position.y = Math.sin(t * 1.1) * .03;    // gentle float on top of the timeline value
+    renderer.render(scene, camera);
+  });
+
+  /* theme watcher: recolour when the page switches between day and night */
+  setInterval(() => {
+    const prev = DARK, ac = readTheme(); accent = ac;
+    uni.color.value.set(ac);
+    [scan.material, beam.material, mols.material, ...rings.map(r => r.material)].forEach(m => m.color.set(ac));
+    if (prev !== DARK) { beam.material.opacity = DARK ? .09 : .06; }
+  }, 600);
+}
+}
+</script></body></html>
