@@ -26,6 +26,7 @@ a smell is made of, how a row of gas sensors would react to it, and what two dif
 ## Contents
 
 - [Demo](#demo)
+- [Motion graphics](#motion-graphics)
 - [In plain words (no background needed)](#in-plain-words-no-background-needed)
 - [Why I built this](#why-i-built-this)
 - [How it works](#how-it-works)
@@ -64,6 +65,39 @@ a smell is made of, how a row of gas sensors would react to it, and what two dif
 The site has a **day/night switch** (it opens in dark mode), a menu that closes itself when you pick a section, and it
 works on phones, tablets and big screens.
 
+
+---
+
+## Motion graphics
+
+A smell is hard to explain with words alone, so here it is in motion.
+
+**A tour of the site** (an animated slideshow made from the real screenshots above):
+
+<div align="center">
+<img src="docs/img/tour.gif" alt="Animated tour of the site" width="720">
+</div>
+
+**The 3D hologram** from the "About me" page. This GIF is **rendered by a Python script** (`tools/make_gifs.py`) that turns
+my photo into a point cloud and uses brightness as depth, so it shows the idea. It is not a screen capture of the page.
+The page itself does the same thing live in the browser with three.js and GSAP, and reacts as you scroll.
+
+<div align="center">
+<img src="docs/img/hologram.gif" alt="Rotating 3D hologram" width="360">
+</div>
+
+**Animated explainers** (animated SVGs, they play right here on GitHub):
+
+| Where to see it | What it shows |
+|---|---|
+| [In plain words](#in-plain-words-no-background-needed) | The journey of one smell, from a word to an AI guess |
+| [How it works](#how-it-works) | A 3D isometric electronic nose whose 8 bars morph between six smells |
+| [The two models, briefly](#the-two-models-briefly) | How the smell model learns from molecule fingerprints |
+
+> If an animation looks still, your viewer may not support animated SVGs. Open the file in `docs/img/` in a browser.
+> **Screen recording:** a real screen recording of the live app is a nice extra. I'll add one later.
+> <!-- TODO: add a real screen recording (mp4 or GIF) of the live app here -->
+
 ---
 
 ## In plain words (no background needed)
@@ -79,7 +113,7 @@ similar in two ways:
    chemicals, so together they make a pattern of numbers, like a fingerprint. A second model looks only at that
    pattern and guesses the smell.
 
-<img src="docs/img/journey.svg" alt="The journey of one smell" width="100%">
+<img src="docs/img/anim-journey.svg" alt="Animated journey of one smell" width="100%">
 
 **An everyday comparison.** Think of a wine taster. After tasting thousands of wines they can say "cherry, oak, a bit of
 smoke". Nobody gave them a rulebook; they learned the patterns from examples. My models learn the same way, from examples.
@@ -150,12 +184,20 @@ Say you pick **Vanilla** (or **Smoky**, **Woody**, **Citrus**; any of the 138 wo
 **What the "confidence" is:** the nose model's score for a word (0 to 1) and where that word ranks among all 138. It is a
 model score, not a guarantee.
 
+<img src="docs/img/anim-nose-3d.svg" alt="Animated 3D isometric view of the simulated electronic nose" width="100%">
+
+*The 8 bars are the SIMULATED sensors. Their heights come from the real simulator output (average of 60 noisy sniffs per smell), scaled so differences are visible.*
+
 <img src="docs/img/fingerprints.svg" alt="Simulated sensor fingerprints for six smells" width="100%">
 
 Each smell leaves a different pattern across the sensors, and that pattern is what the nose model learns. Where two rows
 look alike, the nose gets confused.
 
 ### The two models, briefly
+
+<img src="docs/img/anim-learning.svg" alt="Animated: how the smell model learns" width="100%">
+
+*An illustration of the idea. The real fingerprint has 2,048 slots; the drawing shrinks it to fit.*
 
 - **Smell model.** Each molecule becomes a "fingerprint": a count of its chemical fragments (a Morgan fingerprint from RDKit,
   2,048 numbers). A random forest (200 trees) learns which fragments go with which of 138 smell words.
@@ -214,6 +256,7 @@ I went through the code to label every output:
 | Molecules for other smell words | Chosen from the dataset's expert labels (the 25 "purest" per word, 6 drawn at random per sniff) |
 | Smell-model panel in the app | The final model was trained on **all** the data, so for these molecules it has effectively seen the answers. It is a demo, not a fresh test. The honest score is the held-out **0.83** |
 | A few numbers written in the docs text ("about 98%" for the 6-smell nose, the example table in chapter 8) | Copied from my last run. They can shift slightly if you retrain |
+| Animated diagrams and the hologram GIF | **Illustrations.** The 3D bars use simulated sensor values. The hologram GIF is script-rendered from my photo. The tour GIF is made from real screenshots |
 | Counters like 4,983 molecules, 138 words, 8 sensors, 6,000 sniffs, and the 80/20 split sizes | Facts about the code and data |
 
 If `evaluation.json` is missing, the site shows "n/a" instead of any number.
@@ -313,9 +356,9 @@ test_app.py          a quick end-to-end check
 samples.json         six hand-written everyday smells and their molecules
 
 assets/              logo files, the 3D hologram page, my photo
-docs/img/            diagrams used in this README (made by tools/make_readme_graphics.py)
+docs/img/            diagrams, animated SVGs and GIFs used in this README
 docs/screenshots/    screenshots used in this README
-tools/               the script that draws the README diagrams
+tools/               scripts that draw the README graphics (make_readme_graphics.py, make_motion_graphics.py, make_gifs.py)
 ```
 
 ---
