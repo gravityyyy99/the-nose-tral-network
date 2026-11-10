@@ -20,9 +20,9 @@ This chapter reports what the models achieve, including where they fail. All num
 
 ## It varies a lot by smell
 
-**Smell model, strongest words** (ROC-AUC): cedar, sulfurous, ketonic, clove, amber, popcorn, smoky and onion, all around 0.96 to 0.99. These have distinctive chemistry.
+**Smell model, strongest words** (ROC-AUC): popcorn, cedar, clove, sulfurous, coumarinic, amber, smoky and beefy, all around 0.96 to 0.99. These have distinctive chemistry.
 
-**Smell model, weakest words**: tea, celery and weedy are near guessing, and warm, aromatic and fruit skin are not much better. Experts use these words inconsistently.
+**Smell model, weakest words**: celery is near guessing, and fruit skin, tea, metallic and berry are not much better. Experts use these words inconsistently.
 
 **Nose, easy words** (found in the top 5 almost every time): fruity, floral, green, woody, apple, sulfurous and ketonic.
 
@@ -32,16 +32,16 @@ Some everyday examples, copied from the last evaluation run (they can shift slig
 
 | Smell | Nose finds it in top 5 | Smell model accuracy |
 |---|---|---|
-| fruity | 100% | 0.85 |
+| fruity | 100% | 0.83 |
 | vanilla | 83% | 0.94 |
-| coffee | 69% | 0.89 |
-| banana | 61% | 0.91 |
-| smoky | 35% | 0.96 |
-| lemon | 30% | 0.79 |
-| mint | 26% | 0.82 |
-| lavender | 0% | 0.74 |
+| coffee | 69% | 0.91 |
+| banana | 65% | 0.91 |
+| smoky | 26% | 0.96 |
+| lemon | 23% | 0.82 |
+| mint | 17% | 0.85 |
+| lavender | 0% | 0.72 |
 
-Notice that *smoky* is easy for the smell model (0.96) but hard for the nose (35%). The molecules are distinctive, but the 8 simulated sensors do not separate them well. That difference between the two models is the whole point of having both.
+Notice that *smoky* is easy for the smell model (0.96) but hard for the nose (26%). The molecules are distinctive, but the 8 simulated sensors do not separate them well. That difference between the two models is the whole point of having both.
 
 ## Limits you should know about
 

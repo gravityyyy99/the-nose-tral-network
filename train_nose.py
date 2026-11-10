@@ -18,6 +18,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 NOSE_PATH = os.path.join(HERE, "nose.joblib")
 PROFILE_PATH = os.path.join(HERE, "nose_profile.joblib")
 N_PROFILE_SNIFFS = 6000
+PROFILE_RF = dict(n_estimators=100, min_samples_leaf=10, n_jobs=-1, random_state=0)   # lean, for free hosting
 TOP = 5
 
 
@@ -58,8 +59,7 @@ def train_profile_nose():
     X, Y, intended, labels, usable = make_profile_data(N_PROFILE_SNIFFS, seed=1)
     idx = np.arange(len(X))
     tr, te = train_test_split(idx, test_size=0.2, random_state=0)
-    reg = RandomForestRegressor(n_estimators=150, min_samples_leaf=3, n_jobs=-1,
-                                random_state=0).fit(X[tr], Y[tr])
+    reg = RandomForestRegressor(**PROFILE_RF).fit(X[tr], Y[tr])
     pred = reg.predict(X[te])
     hits = [any(j in np.argsort(p)[::-1][:TOP] for j in intended[i]) for p, i in zip(pred, te)]
     hit = float(np.mean(hits))

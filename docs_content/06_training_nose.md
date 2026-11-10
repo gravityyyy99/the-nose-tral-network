@@ -25,7 +25,7 @@ Naming one of six smells is limited. The app lets you type any of 138 words, so 
    - pick 6 molecules that carry them,
    - run the sensor simulation to get 8 numbers.
 2. The **target** for each sniff is the average smell-word profile of the molecules that were used: a list of 138 scores.
-3. Train a **random forest regressor** (150 trees) to predict that 138-score profile from the 8 numbers.
+3. Train a **random forest regressor** (100 trees) to predict that 138-score profile from the 8 numbers.
 
 In the app, the five highest-scoring words become "the nose's guess".
 

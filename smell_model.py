@@ -5,6 +5,7 @@ fragments) and learns which fragments go with which smell words.
 Run `python smell_model.py` to download the dataset and train.
 """
 import os
+import tempfile
 import urllib.request
 
 import joblib
@@ -24,6 +25,8 @@ MODEL_PATH = os.path.join(HERE, "smell_model.joblib")
 DATA_URL = ("https://raw.githubusercontent.com/BioMachineLearning/openpom/main/"
             "openpom/data/curated_datasets/curated_GS_LF_merged_4983.csv")
 N_BITS = 2048
+# lean forest: fewer trees and bigger leaves keep the trained model small enough for free hosting
+SMELL_RF = dict(n_estimators=100, min_samples_leaf=5, n_jobs=-1, random_state=0)
 _gen = rdFingerprintGenerator.GetMorganGenerator(radius=2, fpSize=N_BITS)
 
 
@@ -35,11 +38,21 @@ def fingerprint(smiles):
 
 
 def download_data():
-    if not os.path.exists(DATA_PATH):
-        os.makedirs(os.path.dirname(DATA_PATH), exist_ok=True)
-        print(f"Downloading dataset from {DATA_URL}")
-        urllib.request.urlretrieve(DATA_URL, DATA_PATH)
-    return DATA_PATH
+    """Return the dataset path, downloading it once. Falls back to a temp folder if the project folder is read-only."""
+    if os.path.exists(DATA_PATH):
+        return DATA_PATH
+    for folder in (os.path.dirname(DATA_PATH), os.path.join(tempfile.gettempdir(), "aroma-gpt-data")):
+        path = os.path.join(folder, os.path.basename(DATA_PATH))
+        if os.path.exists(path):
+            return path
+        try:
+            os.makedirs(folder, exist_ok=True)
+            print(f"Downloading dataset from {DATA_URL}")
+            urllib.request.urlretrieve(DATA_URL, path)
+            return path
+        except OSError:
+            continue
+    raise RuntimeError("Could not save the dataset anywhere writable")
 
 
 def load_dataset():
@@ -62,7 +75,7 @@ def train():
     X, Y, labels = load_dataset()
     print(f"{X.shape[0]} molecules, {len(labels)} smell words")
     Xtr, Xte, Ytr, Yte = train_test_split(X, Y, test_size=0.2, random_state=0)
-    clf = RandomForestClassifier(n_estimators=200, n_jobs=-1, random_state=0)
+    clf = RandomForestClassifier(**SMELL_RF)
     clf.fit(Xtr, Ytr)
     probs = np.column_stack([p[:, 1] if p.shape[1] > 1 else np.zeros(len(Xte))
                              for p in clf.predict_proba(Xte)])

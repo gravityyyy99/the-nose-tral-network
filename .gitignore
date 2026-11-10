@@ -14,9 +14,8 @@ __pycache__/
 *.key
 .streamlit/secrets.toml
 
-# downloaded dataset and trained models (recreated by the scripts, see README)
+# downloaded dataset (re-downloaded automatically). The small trained models ARE committed so the app runs when deployed.
 data/
-*.joblib
 
 # editor / OS / assistant files
 .vscode/

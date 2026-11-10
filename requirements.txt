@@ -1,8 +1,9 @@
-rdkit
-numpy
-pandas
-scikit-learn
-joblib
-pillow
-altair
+# Versions pinned to the ones the saved models were trained with, so the .joblib files load everywhere.
+rdkit==2026.9.1
+numpy>=2.4
+pandas==3.1.1
+scikit-learn==1.9.1
+joblib==1.6.0
+pillow>=13.0
+altair>=6.3
 streamlit>=1.50

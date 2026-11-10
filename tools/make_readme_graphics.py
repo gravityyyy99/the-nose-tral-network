@@ -186,7 +186,7 @@ def fingerprints():
 
 # ------------------------------------------------------------------ 6. honesty map
 def honesty():
-    real = ["Smell model trained on the OpenPOM dataset (4,983 molecules)", "Smell model accuracy on held-out molecules (0.83 ROC-AUC)",
+    real = ["Smell model trained on the OpenPOM dataset (4,983 molecules)", f"Smell model accuracy on held-out molecules ({json.load(open(os.path.join(ROOT, 'evaluation.json')))['smell_model_mean_auc']:.2f} ROC-AUC)",
             "Nose model trained with scikit-learn on simulated sniffs", "Per-word accuracy table (evaluation.json)",
             "Spelling correction, molecule drawings, the app itself"]
     fake = ["All 8 sensor readings: maths plus random noise, no hardware", "Nose accuracy numbers: measured on the same simulator it learned from",

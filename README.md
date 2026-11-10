@@ -200,7 +200,7 @@ look alike, the nose gets confused.
 *An illustration of the idea. The real fingerprint has 2,048 slots; the drawing shrinks it to fit.*
 
 - **Smell model.** Each molecule becomes a "fingerprint": a count of its chemical fragments (a Morgan fingerprint from RDKit,
-  2,048 numbers). A random forest (200 trees) learns which fragments go with which of 138 smell words.
+  2,048 numbers). A random forest (100 trees) learns which fragments go with which of 138 smell words.
 - **Nose model.** I simulate thousands of noisy sniffs of mixtures, and a random forest regressor learns to predict the
   smell-word profile from just the 8 sensor numbers.
 
@@ -217,22 +217,22 @@ These numbers are **measured**, not guessed. They come from [`evaluate.py`](eval
 
 | | Result | Random guessing |
 |---|---|---|
-| Smell model, average ROC-AUC over 138 words | **0.83** | 0.50 |
-| Nose, right word in its top 5 guesses | **40%** | 3.6% |
-| Nose, best guess is the right word | **12%** | 0.7% |
+| Smell model, average ROC-AUC over 138 words | **0.86** | 0.50 |
+| Nose, right word in its top 5 guesses | **38%** | 3.6% |
+| Nose, best guess is the right word | **10%** | 0.7% |
 
 And for the four scents from the example above (from the same evaluation):
 
 | Smell | Nose finds it in its top 5 | Smell model accuracy (ROC-AUC) |
 |---|---|---|
 | Vanilla | 83% | 0.94 |
-| Smoky | 35% | 0.96 |
+| Smoky | 26% | 0.96 |
 | Woody | 100% | 0.83 |
-| Citrus | 84% | 0.85 |
+| Citrus | 84% | 0.84 |
 
 Accuracy varies a lot by smell. Distinctive ones (fruity, woody, vanilla) work well. Vague ones (tea, weedy, celery) do not,
 and **lavender is 0%** for the nose, which is a real weakness I show rather than hide. Notice that *smoky* is easy for the
-smell model (0.96) but hard for the nose (35%): the chemistry is distinctive, but eight simulated sensors don't separate it well.
+smell model (0.96) but hard for the nose (26%): the chemistry is distinctive, but eight simulated sensors don't separate it well.
 
 **Please read these as a demo of the method, not as a performance claim.** The nose is tested on the same simulator it
 learned from, so a real sensor would score lower.
@@ -247,14 +247,14 @@ I went through the code to label every output:
 
 | Output in the app | Is it real? |
 |---|---|
-| Smell model (random forest trained on the OpenPOM dataset) | **Real model**, really trained and tested on held-out molecules (ROC-AUC 0.83) |
+| Smell model (random forest trained on the OpenPOM dataset) | **Real model**, really trained and tested on held-out molecules (ROC-AUC 0.86) |
 | Nose model and the 6-smell classifier | **Real models**, but trained on **simulated** sensor data |
 | The 8 sensor readings | **Simulated.** `sensor.py` is maths plus random noise. No hardware is involved |
 | Nose accuracy numbers | **Real measurements, on the simulator.** A real sensor would score lower |
 | Per-word accuracy table / `evaluation.json` | **Real**, produced by `evaluate.py` (a snapshot of the last run) |
 | Molecules for the 6 everyday smells (`samples.json`) | **Hand-picked** by me from chemistry knowledge, not measured from real products |
 | Molecules for other smell words | Chosen from the dataset's expert labels (the 25 "purest" per word, 6 drawn at random per sniff) |
-| Smell-model panel in the app | The final model was trained on **all** the data, so for these molecules it has effectively seen the answers. It is a demo, not a fresh test. The honest score is the held-out **0.83** |
+| Smell-model panel in the app | The final model was trained on **all** the data, so for these molecules it has effectively seen the answers. It is a demo, not a fresh test. The honest score is the held-out **0.86** |
 | A few numbers written in the docs text ("about 98%" for the 6-smell nose, the example table in chapter 8) | Copied from my last run. They can shift slightly if you retrain |
 | Animated diagrams and the hologram GIF | **Illustrations.** The 3D bars use simulated sensor values. The hologram GIF is script-rendered from my photo. The tour GIF is made from real screenshots |
 | Counters like 4,983 molecules, 138 words, 8 sensors, 6,000 sniffs, and the 80/20 split sizes | Facts about the code and data |
@@ -294,7 +294,7 @@ downloads it from OpenPOM when you train. I did **not** use OpenPOM's model code
 
 **What I built on top (all new in this repo):**
 
-- A simpler smell model of my own (random forest on Morgan fingerprints), with a measured ROC-AUC of 0.83.
+- A simpler smell model of my own (random forest on Morgan fingerprints), with a measured ROC-AUC of 0.86.
   (OpenPOM's graph neural network reports about 0.89 in its authors' tests; moving to it is on my roadmap.)
 - The **simulated 8-sensor electronic nose**, with noise, humidity and drift.
 - The **nose model** that works from sensor readings alone, and the any-smell training on mixtures.
@@ -318,19 +318,20 @@ python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 
-# 3. Train the models (this downloads the dataset first; a few minutes in total)
-python smell_model.py              # downloads the dataset, trains the smell model, prints its ROC-AUC
-python train_nose.py               # simulates sniffs and trains the nose models
-python evaluate.py                 # measures accuracy per smell word (writes evaluation.json)
-
-# 4. Run the app
+# 3. Run the app (the small trained models are already included in the repo)
 streamlit run app.py
 ```
 
 Then open the address Streamlit prints (usually http://localhost:8501), pick a smell and press **Sniff**.
 
-- The trained model files are saved next to the code as `.joblib` files (roughly 160 MB together, compressed). They are
-  **not** in this repo because of their size, so you create them in step 3. The dataset is saved in `data/`.
+- The trained models are included (`smell_model.joblib`, `nose_profile.joblib`, `nose.joblib`, about 27 MB in total), and the app
+  needs roughly 300 MB of memory to run them. The first time it needs the dataset it downloads it into `data/` (1.6 MB).
+- **Want to retrain from scratch?** Run these three, in order (a few minutes in total). They overwrite the models and `evaluation.json`:
+  ```bash
+  python smell_model.py              # downloads the dataset, trains the smell model, prints its ROC-AUC
+  python train_nose.py               # simulates sniffs and trains the nose models
+  python evaluate.py                 # measures accuracy per smell word (writes evaluation.json)
+  ```
 - To check everything works without a browser: `python test_app.py`.
 - Your numbers may differ slightly from mine: the models and simulated sniffs are random, and I fixed seeds where I could.
 
@@ -368,7 +369,7 @@ tools/               scripts that draw the README graphics (make_readme_graphics
 <img src="docs/img/roadmap.svg" alt="Project roadmap" width="100%">
 
 **Done**
-- [x] Smell model trained on 4,983 expert-labelled molecules (ROC-AUC 0.83 on held-out molecules)
+- [x] Smell model trained on 4,983 expert-labelled molecules (ROC-AUC 0.86 on held-out molecules)
 - [x] Simulated 8-sensor electronic nose with noise, humidity and drift
 - [x] Nose model that works from the 8 numbers alone, for any of 138 smell words
 - [x] Typeable interface with spelling correction, and per-smell accuracy

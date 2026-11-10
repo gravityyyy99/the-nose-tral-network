@@ -11,7 +11,7 @@ from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import train_test_split
 
 import smell_model
-from train_nose import make_profile_data
+from train_nose import PROFILE_RF, make_profile_data
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TOP = 5
@@ -20,7 +20,7 @@ TOP = 5
 def smell_model_per_word():
     X, Y, labels = smell_model.load_dataset()
     Xtr, Xte, Ytr, Yte = train_test_split(X, Y, test_size=0.2, random_state=0)
-    clf = RandomForestClassifier(n_estimators=200, n_jobs=-1, random_state=0).fit(Xtr, Ytr)
+    clf = RandomForestClassifier(**smell_model.SMELL_RF).fit(Xtr, Ytr)
     probs = np.column_stack([p[:, 1] if p.shape[1] > 1 else np.zeros(len(Xte))
                              for p in clf.predict_proba(Xte)])
     out = {}
@@ -34,8 +34,7 @@ def nose_per_word():
     """Train on one set of sniffs, test on a different set (new random mixtures + noise).
     Single-word sniffs only, so 'intended word' is unambiguous."""
     Xtr, Ytr, _, labels, usable = make_profile_data(6000, seed=1)
-    reg = RandomForestRegressor(n_estimators=150, min_samples_leaf=3, n_jobs=-1,
-                                random_state=0).fit(Xtr, Ytr)
+    reg = RandomForestRegressor(**PROFILE_RF).fit(Xtr, Ytr)
     Xte, _, intended, _, _ = make_profile_data(len(usable) * 25, seed=99, max_words=1)
     pred = reg.predict(Xte)
     top1, top5 = {}, {}

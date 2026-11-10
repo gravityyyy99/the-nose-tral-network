@@ -8,7 +8,10 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 from rdkit import Chem
-from rdkit.Chem import Draw
+try:
+    from rdkit.Chem import Draw
+except Exception:          # some hosts lack the system libraries RDKit's drawing code needs
+    Draw = None
 
 import sensor
 import smell_model
@@ -158,7 +161,11 @@ def run():
                     'real aroma molecules are drawn as chemical structures: lines are bonds, letters are atoms.</div>',
                     unsafe_allow_html=True)
         mols = [Chem.MolFromSmiles(s) for s in smiles]
-        st.image(Draw.MolsToGridImage(mols, molsPerRow=min(4, len(mols)), subImgSize=(230, 180)))
+        if Draw is not None:
+            st.image(Draw.MolsToGridImage(mols, molsPerRow=min(4, len(mols)), subImgSize=(230, 180)))
+        else:   # drawing unavailable on this machine: list the molecules as text instead of crashing
+            st.caption("Structure drawings are unavailable on this server, so the molecules are listed as SMILES text.")
+            st.table(pd.DataFrame({"Molecule (SMILES)": smiles}))
 
     with tab3:
         st.markdown('<div class="cap">The nose has 8 gas sensors, each sensitive to a different kind of molecule. '

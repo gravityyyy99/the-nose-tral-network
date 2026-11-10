@@ -18,7 +18,7 @@ The result is a row of counts saying "this molecule has 3 of fragment A, 1 of fr
 
 ## Step 2: learn which fragments go with which words
 
-The model is a **random forest** with 200 trees, from scikit-learn.
+The model is a **random forest** with 100 trees (each leaf covers at least 5 molecules, which keeps the saved model small), from scikit-learn.
 
 A decision tree asks a chain of yes/no questions, like "does fragment 412 appear?", until it reaches an answer. A random forest builds many trees on slightly different views of the data and averages their answers. It is robust and needs very little tuning.
 
